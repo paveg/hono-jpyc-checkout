@@ -1,0 +1,61 @@
+{
+  "name": "hono-jpyc-checkout",
+  "version": "0.1.0",
+  "description": "Unofficial Hono middleware for accepting JPYC payments on Cloudflare Workers. Not affiliated with JPYC株式会社.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md", "README.ja.md", "LICENSE"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "prepublishOnly": "bun run lint && bun run typecheck && bun run test && bun run build"
+  },
+  "keywords": ["hono", "jpyc", "stablecoin", "checkout", "cloudflare-workers", "polygon"],
+  "author": "Ryota Ikezawa",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paveg/hono-jpyc-checkout.git"
+  },
+  "homepage": "https://github.com/paveg/hono-jpyc-checkout",
+  "bugs": "https://github.com/paveg/hono-jpyc-checkout/issues",
+  "dependencies": {
+    "@hono/valibot-validator": "^0.5.0",
+    "drizzle-orm": "^0.36.0",
+    "ulid": "^2.3.0",
+    "valibot": "^0.42.0"
+  },
+  "peerDependencies": {
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "@cloudflare/vitest-pool-workers": "^0.5.0",
+    "@cloudflare/workers-types": "^4.20240000.0",
+    "@types/node": "^22.0.0",
+    "drizzle-kit": "^0.28.0",
+    "hono": "^4.6.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "wrangler": "^3.80.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
