@@ -30,7 +30,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paveg/hono-jpyc-checkout.git"
+    "url": "git+https://github.com/paveg/hono-jpyc-checkout.git"
   },
   "homepage": "https://github.com/paveg/hono-jpyc-checkout",
   "bugs": "https://github.com/paveg/hono-jpyc-checkout/issues",
