@@ -18,8 +18,7 @@ export function CheckoutPage({ session, bootstrap, theme }: PageProps) {
   const styles = renderStyles(theme)
   const script = renderClientScript(bootstrap)
   const merchantName = theme.merchantName ?? 'Merchant'
-  const truncated =
-    session.receivingAddress.slice(0, 6) + '...' + session.receivingAddress.slice(-4)
+  const truncated = `${session.receivingAddress.slice(0, 6)}...${session.receivingAddress.slice(-4)}`
 
   return (
     <html lang="en">
@@ -45,7 +44,7 @@ export function CheckoutPage({ session, bootstrap, theme }: PageProps) {
             <div class="meta-row">
               <span>Pay to</span>
               <strong>
-                {truncated} <button class="copy-btn">Copy</button>
+                {truncated} <button type="button" class="copy-btn">Copy</button>
               </strong>
             </div>
             <div class="meta-row">
@@ -53,7 +52,7 @@ export function CheckoutPage({ session, bootstrap, theme }: PageProps) {
               <strong>Polygon</strong>
             </div>
           </div>
-          <button class="primary">Connect Wallet</button>
+          <button type="button" class="primary">Connect Wallet</button>
           <div class="status" />
           <div class="footer">Powered by hono-jpyc-checkout</div>
         </div>
