@@ -1,10 +1,5 @@
 import { Hono } from 'hono'
-import {
-  createCheckoutSession,
-  jpycCheckout,
-  jpycSweep,
-  type Network,
-} from 'hono-jpyc-checkout'
+import { type Network, createCheckoutSession, jpycCheckout, jpycSweep } from 'hono-jpyc-checkout'
 
 interface Env {
   DB: D1Database
