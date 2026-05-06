@@ -44,7 +44,10 @@ export function CheckoutPage({ session, bootstrap, theme }: PageProps) {
             <div class="meta-row">
               <span>Pay to</span>
               <strong>
-                {truncated} <button type="button" class="copy-btn">Copy</button>
+                {truncated}{' '}
+                <button type="button" class="copy-btn">
+                  Copy
+                </button>
               </strong>
             </div>
             <div class="meta-row">
@@ -52,7 +55,9 @@ export function CheckoutPage({ session, bootstrap, theme }: PageProps) {
               <strong>Polygon</strong>
             </div>
           </div>
-          <button type="button" class="primary">Connect Wallet</button>
+          <button type="button" class="primary">
+            Connect Wallet
+          </button>
           <div class="status" />
           <div class="footer">Powered by hono-jpyc-checkout</div>
         </div>
