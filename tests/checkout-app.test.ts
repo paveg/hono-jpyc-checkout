@@ -82,6 +82,26 @@ describe('POST /checkout/:id/connect', () => {
   })
 })
 
+describe('POST /checkout/:id/verify (idempotent)', () => {
+  it('returns 200 paid:true for already-paid session without consulting RPC', async () => {
+    const { id } = await newSession()
+    // Force the session into paid state without going through the route
+    await env.DB.prepare(
+      `UPDATE sessions SET status='paid', tx_hash=?, block_number=?, paid_at=?, updated_at=? WHERE id=?`,
+    )
+      .bind('0xabc', 1, new Date().toISOString(), new Date().toISOString(), id)
+      .run()
+
+    const res = await buildApp().request(`/checkout/${id}/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ txHash: `0x${'a'.repeat(64)}` }),
+    })
+    expect(res.status).toBe(200)
+    expect(await res.json()).toMatchObject({ paid: true })
+  })
+})
+
 describe('GET /checkout/:id/status', () => {
   it('returns JSON status', async () => {
     const { id } = await newSession()

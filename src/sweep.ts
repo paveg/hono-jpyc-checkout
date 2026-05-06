@@ -26,6 +26,7 @@ export interface RunSweepOptions {
   webhook?: WebhookOptions
   onPaid?: (session: PaidSession) => Promise<void>
   fetchImpl?: typeof fetch
+  waitUntil?: (promise: Promise<void>) => void
 }
 
 export async function runSweep(opts: RunSweepOptions): Promise<{ expired: number; paid: number }> {
@@ -62,7 +63,7 @@ export async function runSweep(opts: RunSweepOptions): Promise<{ expired: number
           const updated = (await getSession(opts.db, session.id)) as PaidSession
           if (opts.onPaid) await opts.onPaid(updated)
           if (opts.webhook) {
-            await fireWebhook(
+            const promise = fireWebhook(
               opts.webhook,
               {
                 id: `evt_${updated.id}`,
@@ -82,6 +83,11 @@ export async function runSweep(opts: RunSweepOptions): Promise<{ expired: number
               },
               opts.fetchImpl ?? fetch,
             )
+            if (opts.waitUntil) {
+              opts.waitUntil(promise)
+            } else {
+              await promise
+            }
           }
         }
       } else if (result.reason === 'tx_reverted') {
@@ -96,7 +102,7 @@ export async function runSweep(opts: RunSweepOptions): Promise<{ expired: number
 }
 
 export function jpycSweep<Env>(config: SweepConfig<Env>) {
-  return async (_event: ScheduledEvent, env: Env, _ctx: ExecutionContext) => {
+  return async (_event: ScheduledEvent, env: Env, ctx: ExecutionContext) => {
     await runSweep({
       db: config.db(env),
       rpcUrl: config.rpcUrl(env),
@@ -104,6 +110,7 @@ export function jpycSweep<Env>(config: SweepConfig<Env>) {
       confirmations: config.confirmations,
       webhook: config.webhook,
       onPaid: config.onPaid ? (s) => config.onPaid!(s, env) : undefined,
+      waitUntil: ctx.waitUntil.bind(ctx),
     })
   }
 }
