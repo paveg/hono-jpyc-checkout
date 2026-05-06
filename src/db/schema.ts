@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { check, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
+import { check, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const sessions = sqliteTable(
   'sessions',
@@ -26,7 +26,7 @@ export const sessions = sqliteTable(
     txHashUnique: uniqueIndex('sessions_tx_hash_unique')
       .on(table.txHash)
       .where(sql`${table.txHash} IS NOT NULL`),
-    statusExpiresIdx: uniqueIndex('sessions_status_expires_idx').on(table.status, table.expiresAt),
+    statusExpiresIdx: index('sessions_status_expires_idx').on(table.status, table.expiresAt),
   }),
 )
 

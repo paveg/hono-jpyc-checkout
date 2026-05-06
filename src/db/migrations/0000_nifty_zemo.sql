@@ -16,4 +16,4 @@ CREATE TABLE `sessions` (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `sessions_tx_hash_unique` ON `sessions` (`tx_hash`) WHERE "sessions"."tx_hash" IS NOT NULL;--> statement-breakpoint
-CREATE UNIQUE INDEX `sessions_status_expires_idx` ON `sessions` (`status`,`expires_at`);
+CREATE INDEX `sessions_status_expires_idx` ON `sessions` (`status`,`expires_at`);

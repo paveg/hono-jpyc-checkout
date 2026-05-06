@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a64777d0-1602-4c66-a41a-9ef54acdba8a",
+  "id": "82dc250d-475e-4122-8cd4-121df6acd61b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "sessions": {
@@ -115,7 +115,7 @@
             "status",
             "expires_at"
           ],
-          "isUnique": true
+          "isUnique": false
         }
       },
       "foreignKeys": {},
