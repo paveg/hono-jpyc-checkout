@@ -157,6 +157,15 @@ describe('verify', () => {
     })
   })
 
+  it('insufficient_confirmations when diff is exactly confirmations - 1', () => {
+    // receiptBlock=0x100, current=0x107 -> diff=7, threshold=8 -> must fail
+    // Pairs with the happy-path test at diff=8 to pin the < vs <= boundary in verify.ts.
+    expect(verify(makeInput({ currentBlockNumber: 0x107n }))).toEqual({
+      paid: false,
+      reason: 'insufficient_confirmations',
+    })
+  })
+
   it('rejects log emitted by a different ERC-20', () => {
     const wrong = makeReceipt({
       logs: [
@@ -200,6 +209,36 @@ describe('verify', () => {
       paid: true,
       blockNumber: 0x100,
     })
+  })
+
+  it('finds matching log when there is amount-noise from same JPYC contract / from / to', () => {
+    // Two Transfer logs from JPYC, same from and to, but only the second has the
+    // expected amount. Pins the .find(value === expectedAmountWei) selection
+    // inside the JPYC-filtered set (the existing "multiple logs" test only mixes
+    // a different ERC-20 as noise, which gets filtered out earlier).
+    const r = makeReceipt({
+      logs: [
+        {
+          address: JPYC_CONTRACT,
+          topics: [
+            TRANSFER_EVENT_TOPIC,
+            `0x000000000000000000000000${FROM.slice(2)}`,
+            `0x000000000000000000000000${TO.slice(2)}`,
+          ],
+          data: '0x0000000000000000000000000000000000000000000000000000000000000001', // wrong amount (1 wei)
+        },
+        {
+          address: JPYC_CONTRACT,
+          topics: [
+            TRANSFER_EVENT_TOPIC,
+            `0x000000000000000000000000${FROM.slice(2)}`,
+            `0x000000000000000000000000${TO.slice(2)}`,
+          ],
+          data: '0x0000000000000000000000000000000000000000000000056bc75e2d63100000', // correct (100 * 10^18)
+        },
+      ],
+    })
+    expect(verify(makeInput({ receipt: r }))).toEqual({ paid: true, blockNumber: 0x100 })
   })
 
   it('sender_mismatch when expectedFromAddress is null', () => {
