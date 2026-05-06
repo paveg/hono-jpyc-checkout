@@ -129,6 +129,24 @@ describe('expireOverdueSessions', () => {
     expect(count).toBeGreaterThanOrEqual(1)
     expect((await getSession(env.DB, id))?.status).toBe('expired')
   })
+
+  it('expires session whose expires_at equals now (<= boundary)', async () => {
+    // expiresInSec: 0 -> expires_at == createdAt; the SQL operator is `expires_at <= ?`,
+    // so an expires_at exactly equal to now must expire. Pins <= vs < regression.
+    const { id } = await createCheckoutSession(env.DB, {
+      orderId: 'e-now',
+      amount: '10',
+      successUrl: 'https://e.com',
+      cancelUrl: 'https://e.com',
+      receivingAddress: RECEIVING,
+      origin: 'https://e.com',
+      expiresInSec: 0,
+    })
+    // Sleep 1ms to ensure now() > expires_at by at least the millisecond resolution
+    await new Promise((r) => setTimeout(r, 2))
+    await expireOverdueSessions(env.DB)
+    expect((await getSession(env.DB, id))?.status).toBe('expired')
+  })
 })
 
 describe('listOpenSessionsWithTxHash', () => {
