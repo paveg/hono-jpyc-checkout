@@ -1,0 +1,17 @@
+name = "hono-jpyc-checkout-demo"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "jpyc-checkout-example"
+database_id = "REPLACE_WITH_ACTUAL_DB_ID"
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+[vars]
+NETWORK = "polygon-amoy"
+RECEIVING_ADDRESS = "0xREPLACE_WITH_TESTNET_ADDRESS"
+RPC_URL = "https://rpc-amoy.polygon.technology"
